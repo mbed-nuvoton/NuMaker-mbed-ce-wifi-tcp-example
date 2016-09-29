@@ -1,0 +1,22 @@
+{
+    "config": {
+        "trace": true,
+        "network-interface":{
+            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "value": "WIFI"
+        },
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"ZZZNET\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"12345678168\""
+        }
+    },
+    "target_overrides": {
+        "*": {
+            "target.features_add": ["COMMON_PAL"]
+        }
+    }
+}
