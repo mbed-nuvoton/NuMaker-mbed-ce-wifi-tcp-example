@@ -136,9 +136,6 @@ int main() {
         // Find "Hello World!" string in reply
         bool found_hello = find_substring(buffer, buffer + ret, HTTP_HELLO_STR, HTTP_HELLO_STR + strlen(HTTP_HELLO_STR));
 
-        TEST_ASSERT_TRUE(found_200_ok);
-        TEST_ASSERT_TRUE(found_hello);
-
         if (!found_200_ok) result = false;
         if (!found_hello) result = false;
 
