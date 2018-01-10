@@ -37,7 +37,7 @@ ThreadInterface mesh;
 namespace {
     // Test connection information
 #ifndef LOCAL_LAN
-const char *HTTP_SERVER_NAME = "developer.mbed.org";
+const char *HTTP_SERVER_NAME = "os.mbed.com";
 #else
 const char *HTTP_SERVER_NAME = "pt22_winserver2.nuvoton.com";
 #endif
