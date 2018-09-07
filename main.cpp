@@ -1,14 +1,9 @@
 
 #include <algorithm>
 #include "mbed.h"
+#include "mbed_stats.h"
 #include "TCPSocket.h"
 #include "unity/unity.h"
-
-#ifndef __CC_ARM 
-#ifdef __GNUC__
-extern "C" caddr_t _sbrk(int incr);
-#endif
-#endif
 
 
 //#define LOCAL_LAN
@@ -70,18 +65,17 @@ bool find_substring(const char *first, const char *last, const char *s_first, co
 Serial output(USBTX, USBRX);
 
 int main() {
+#if MBED_HEAP_STATS_ENABLED
+    mbed_stats_heap_t heap_stats;
+#endif
+
     // Sets the console baud-rate
     output.baud(115200);
     output.printf(" Start WiFi test \r\n");
      
     bool result = true;
-     int rc = 0;
+    int rc = 0;
 
-#ifndef __CC_ARM 
-#ifdef __GNUC__
-    output.printf("sbrk=%x:\r\n", (unsigned int)_sbrk(0));
-#endif
-#endif 
     output.printf(" Start Connection ... \r\n");
 
 
@@ -146,22 +140,23 @@ int main() {
         output.printf("%s", buffer);
     }
 
-#ifndef __CC_ARM 
-#ifdef __GNUC__
-    output.printf("sbrk=%x:\r\n", (unsigned int)_sbrk(0));
+#if MBED_HEAP_STATS_ENABLED
+    mbed_stats_heap_get(&heap_stats);
+    printf("Current heap: %lu\r\n", heap_stats.current_size);
+    printf("Max heap size: %lu\r\n", heap_stats.max_size);
 #endif
-#endif 
+ 
     output.printf(" Close socket & disconnect ... \r\n");
     sock.close();
     
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    ((ESP8266Interface *)network_interface)->disconnect();
+    esp.disconnect();
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    ((EthernetInterface *)network_interface)->disconnect();
+    eth.disconnect();
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_LOWPAN_ND
-    ((LoWPANNDInterface *)network_interface)->disconnect();
+    mesh.disconnect();
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
-    ((ThreadInterface *)network_interface)->disconnect();
+    mesh.disconnect();
 #endif
     output.printf(" End \r\n");
 }

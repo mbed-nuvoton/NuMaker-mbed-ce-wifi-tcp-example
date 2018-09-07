@@ -1,4 +1,7 @@
 {
+    "macros": [
+        "MBED_HEAP_STATS_ENABLED=1"
+    ],
     "config": {
         "trace": true,
         "network-interface":{
