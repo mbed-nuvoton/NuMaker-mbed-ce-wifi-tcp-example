@@ -14,8 +14,28 @@
 #define MESH_THREAD     4
 
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
+#define ESP8266_AT_ONBOARD      1   // On-board ESP8266
+#define ESP8266_AT_EXTERN       2   // External ESP8266 through UNO D1/D0
+
+#define ESP8266_AT_SEL          ESP8266_AT_ONBOARD
+#endif
+
+#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #include "ESP8266Interface.h"
+#   if ESP8266_AT_SEL == ESP8266_AT_ONBOARD
+#       if TARGET_NUMAKER_IOT_M487
+DigitalOut esp_rst(PH_3, 0);        // Simulate reset button pressed
+ESP8266Interface esp(PH_8, PH_9);
+#       elif TARGET_NUMAKER_PFM_M2351
+DigitalIn esp_gpio0(PD_6);          // Go boot mode by default
+                                    // User can change to F/W update mode by short'ing ESP8266 GPIO0/GND
+                                    // before power-on
+DigitalOut esp_pwr_off(PD_7, 1);    // Disable power to on-board ESP8266
+ESP8266Interface esp(PD_1, PD_0);
+#       endif
+#   elif ESP8266_AT_SEL == ESP8266_AT_EXTERN
 ESP8266Interface esp(D1, D0);
+#   endif
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
 #include "EthernetInterface.h"
 EthernetInterface eth;
@@ -65,6 +85,20 @@ bool find_substring(const char *first, const char *last, const char *s_first, co
 Serial output(USBTX, USBRX);
 
 int main() {
+#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
+#   if ESP8266_AT_SEL == ESP8266_AT_ONBOARD
+#       if TARGET_NUMAKER_IOT_M487
+    wait_ms(5);
+    esp_rst = 1;                    // Simulate reset button released
+    wait_ms(5);
+#       elif TARGET_NUMAKER_PFM_M2351
+    wait_ms(50);
+    esp_pwr_off = 0;                // Turn on on-board ESP8266
+    wait_ms(50);
+#       endif
+#   endif
+#endif
+
 #if MBED_HEAP_STATS_ENABLED
     mbed_stats_heap_t heap_stats;
 #endif
