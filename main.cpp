@@ -3,7 +3,6 @@
 #include "mbed.h"
 #include "mbed_stats.h"
 #include "TCPSocket.h"
-#include "unity/unity.h"
 
 
 //#define LOCAL_LAN
