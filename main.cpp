@@ -4,7 +4,6 @@
 #include "mbed_stats.h"
 #include "TCPSocket.h"
 
-
 //#define LOCAL_LAN
 
 #define ETHERNET        1
@@ -16,10 +15,10 @@
 #define ESP8266_AT_ONBOARD      1   // On-board ESP8266
 #define ESP8266_AT_EXTERN       2   // External ESP8266 through UNO D1/D0
 
-#define ESP8266_AT_SEL          ESP8266_AT_ONBOARD
+#ifndef ESP8266_AT_SEL
+#error("ESP8266_AT_SEL missing. Select ESP8266 on-board/external.")
 #endif
 
-#if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #include "ESP8266Interface.h"
 #   if ESP8266_AT_SEL == ESP8266_AT_ONBOARD
 #       if TARGET_NUMAKER_IOT_M487
@@ -80,9 +79,6 @@ bool find_substring(const char *first, const char *last, const char *s_first, co
     return (f != last);
 }
 
-
-Serial output(USBTX, USBRX);
-
 int main() {
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
 #   if ESP8266_AT_SEL == ESP8266_AT_ONBOARD
@@ -102,48 +98,46 @@ int main() {
     mbed_stats_heap_t heap_stats;
 #endif
 
-    // Sets the console baud-rate
-    output.baud(115200);
-    output.printf(" Start WiFi test \r\n");
+    printf("Start WiFi test \r\n");
      
     bool result = true;
     int rc = 0;
 
-    output.printf(" Start Connection ... \r\n");
+    printf("Start Connection ... \r\n");
 
 
     NetworkInterface *network_interface = 0;
    
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
-    output.printf("\n\rUsing WiFi \r\n");
-    output.printf("\n\rConnecting to WiFi..\r\n");
+    printf("\n\rUsing WiFi \r\n");
+    printf("\n\rConnecting to WiFi..\r\n");
     rc = esp.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_WPA_WPA2);
     network_interface = &esp;
 #elif MBED_CONF_APP_NETWORK_INTERFACE == ETHERNET
-    output.printf("Using Ethernet\r\n");
+    printf("Using Ethernet\r\n");
     rc = eth.connect();
     network_interface = &eth;
 #endif
 #ifdef MESH
-    output.printf("Using Mesh\r\n");
-    output.printf("\n\rConnecting to Mesh..\r\n");
+    printf("Using Mesh\r\n");
+    printf("\n\rConnecting to Mesh..\r\n");
     rc = mesh.connect();
     network_interface = &mesh;
 #endif
 
     if(rc == 0) {
-        output.printf("\n\rConnected to Network successfully\r\n");
+        printf("\n\rConnected to Network successfully\r\n");
     } else {
-        output.printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", rc);
+        printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", rc);
         return 0;
     }    
         
-    output.printf("TCP client IP Address is %s\r\n", network_interface->get_ip_address());
+    printf("TCP client IP Address is %s\r\n", network_interface->get_ip_address());
 
     TCPSocket sock(network_interface);
-    output.printf(" HTTP Connection ... \r\n");
+    printf(" HTTP Connection ... \r\n");
     if (sock.connect(HTTP_SERVER_NAME, HTTP_SERVER_PORT) == 0) {
-        output.printf("HTTP: Connected to %s:%d\r\n", HTTP_SERVER_NAME, HTTP_SERVER_PORT);
+        printf("HTTP: Connected to %s:%d\r\n", HTTP_SERVER_NAME, HTTP_SERVER_PORT);
 
         // We are constructing GET command like this:
         // GET http://developer.mbed.org/media/uploads/mbed_official/hello.txt HTTP/1.0\n\n
@@ -166,11 +160,11 @@ int main() {
         if (!found_200_ok) result = false;
         if (!found_hello) result = false;
 
-        output.printf("HTTP: Received %d chars from server\r\n", ret);
-        output.printf("HTTP: Received 200 OK status ... %s\r\n", found_200_ok ? "[OK]" : "[FAIL]");
-        output.printf("HTTP: Received '%s' status ... %s\r\n", HTTP_HELLO_STR, found_hello ? "[OK]" : "[FAIL]");
-        output.printf("HTTP: Received massage:\r\n\r\n");
-        output.printf("%s", buffer);
+        printf("HTTP: Received %d chars from server\r\n", ret);
+        printf("HTTP: Received 200 OK status ... %s\r\n", found_200_ok ? "[OK]" : "[FAIL]");
+        printf("HTTP: Received '%s' status ... %s\r\n", HTTP_HELLO_STR, found_hello ? "[OK]" : "[FAIL]");
+        printf("HTTP: Received massage:\r\n\r\n");
+        printf("%s", buffer);
     }
 
 #if MBED_HEAP_STATS_ENABLED
@@ -179,7 +173,7 @@ int main() {
     printf("Max heap size: %lu\r\n", heap_stats.max_size);
 #endif
  
-    output.printf(" Close socket & disconnect ... \r\n");
+    printf(" Close socket & disconnect ... \r\n");
     sock.close();
     
 #if MBED_CONF_APP_NETWORK_INTERFACE == WIFI
@@ -191,5 +185,5 @@ int main() {
 #elif MBED_CONF_APP_NETWORK_INTERFACE == MESH_THREAD
     mesh.disconnect();
 #endif
-    output.printf(" End \r\n");
+    printf(" End \r\n");
 }

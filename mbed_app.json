@@ -1,26 +1,45 @@
 {
-    "macros": [
-        "MBED_HEAP_STATS_ENABLED=1"
-    ],
     "config": {
-        "trace": true,
         "network-interface":{
-            "help": "options are ETHERNET,WIFI,MESH_LOWPAN_ND,MESH_THREAD",
+            "help": "options are ETHERNET, WIFI, MESH_LOWPAN_ND, MESH_THREAD",
             "value": "WIFI"
         },
         "wifi-ssid": {
             "help": "WiFi SSID",
-            "value": "\"ZZZNET\""
+            "value": "\"SSID\""
         },
         "wifi-password": {
             "help": "WiFi Password",
-            "value": "\"12345678168\""
+            "value": "\"Password\""
         }
     },
     "target_overrides": {
         "*": {
-            "target.features_add": ["COMMON_PAL"],
-	    "drivers.uart-serial-rxbuf-size": 1024
+            "platform.stdio-baud-rate"              : 115200,
+            "platform.stdio-convert-newlines"       : true,
+            "platform.heap-stats-enabled"           : 1,
+            "drivers.uart-serial-rxbuf-size"        : 1024,
+            "drivers.uart-serial-txbuf-size"        : 1024
+        },
+        "NUMAKER_PFM_NUC472": {
+            "target.macros_add": [
+                "ESP8266_AT_SEL=ESP8266_AT_EXTERN"
+            ]
+        },
+        "NUMAKER_PFM_M487": {
+            "target.macros_add": [
+                "ESP8266_AT_SEL=ESP8266_AT_EXTERN"
+            ]
+        },
+        "NUMAKER_IOT_M487": {
+            "target.macros_add": [
+                "ESP8266_AT_SEL=ESP8266_AT_ONBOARD"
+            ]
+        },
+        "NUMAKER_PFM_M2351": {
+            "target.macros_add": [
+                "ESP8266_AT_SEL=ESP8266_AT_ONBOARD"
+            ]
         }
     }
 }
