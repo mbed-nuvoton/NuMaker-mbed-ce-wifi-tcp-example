@@ -1,9 +1,9 @@
-
 #include <algorithm>
 #include "mbed.h"
 #include "mbed_stats.h"
 #include "TCPSocket.h"
 
+#define MBED_HEAP_STATS_ENABLED 1
 //#define LOCAL_LAN
 
 #define ETHERNET        1
@@ -50,16 +50,16 @@ ThreadInterface mesh;
 namespace {
     // Test connection information
 #ifndef LOCAL_LAN
-const char *HTTP_SERVER_NAME = "os.mbed.com";
+const char *HTTP_SERVER_NAME = "www.ifconfig.io"; 
 #else
 const char *HTTP_SERVER_NAME = "pt22_winserver2.nuvoton.com";
 #endif
 
 #ifndef LOCAL_LAN
-const char *HTTP_SERVER_FILE_PATH = "/media/uploads/mbed_official/hello.txt";
+const char *HTTP_SERVER_FILE_PATH = "/method";
 const int HTTP_SERVER_PORT = 80;
 #else
-const char *HTTP_SERVER_FILE_PATH = "/examples/arm_mbed/hello.txt";
+const char *HTTP_SERVER_FILE_PATH = "/examples/arm_mbed/method.txt";
 const int HTTP_SERVER_PORT = 8080;
 #endif
 
@@ -68,7 +68,7 @@ const int HTTP_SERVER_PORT = 8080;
 
     // Test related data
     const char *HTTP_OK_STR = "200 OK";
-    const char *HTTP_HELLO_STR = "Hello world!";
+    const char *HTTP_EXPECT_STR = "GET";
 
     // Test buffers
     char buffer[RECV_BUFFER_SIZE] = {0};
@@ -140,29 +140,31 @@ int main() {
         printf("HTTP: Connected to %s:%d\r\n", HTTP_SERVER_NAME, HTTP_SERVER_PORT);
 
         // We are constructing GET command like this:
-        // GET http://developer.mbed.org/media/uploads/mbed_official/hello.txt HTTP/1.0\n\n
+        // GET http://www.ifconfig.io/method HTTP/1.0\n\n
+        
         strcpy(buffer, "GET http://");
         strcat(buffer, HTTP_SERVER_NAME);
         strcat(buffer, HTTP_SERVER_FILE_PATH);
         strcat(buffer, " HTTP/1.0\n\n");
+        
         // Send GET command
         sock.send(buffer, strlen(buffer));
 
         // Server will respond with HTTP GET's success code
         const int ret = sock.recv(buffer, sizeof(buffer) - 1);
         buffer[ret] = '\0';
-
+        
         // Find 200 OK HTTP status in reply
         bool found_200_ok = find_substring(buffer, buffer + ret, HTTP_OK_STR, HTTP_OK_STR + strlen(HTTP_OK_STR));
-        // Find "Hello World!" string in reply
-        bool found_hello = find_substring(buffer, buffer + ret, HTTP_HELLO_STR, HTTP_HELLO_STR + strlen(HTTP_HELLO_STR));
+        // Find "deny" string in reply
+        bool found_expect = find_substring(buffer, buffer + ret, HTTP_EXPECT_STR, HTTP_EXPECT_STR + strlen(HTTP_EXPECT_STR));
 
         if (!found_200_ok) result = false;
-        if (!found_hello) result = false;
+        if (!found_expect) result = false;
 
         printf("HTTP: Received %d chars from server\r\n", ret);
         printf("HTTP: Received 200 OK status ... %s\r\n", found_200_ok ? "[OK]" : "[FAIL]");
-        printf("HTTP: Received '%s' status ... %s\r\n", HTTP_HELLO_STR, found_hello ? "[OK]" : "[FAIL]");
+        printf("HTTP: Received '%s' status ... %s\r\n", HTTP_EXPECT_STR, found_expect ? "[OK]" : "[FAIL]");
         printf("HTTP: Received massage:\r\n\r\n");
         printf("%s", buffer);
     }
