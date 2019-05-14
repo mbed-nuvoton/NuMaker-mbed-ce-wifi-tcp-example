@@ -140,12 +140,20 @@ int main() {
         printf("HTTP: Connected to %s:%d\r\n", HTTP_SERVER_NAME, HTTP_SERVER_PORT);
 
         // We are constructing GET command like this:
+#ifndef USE_HTTP_1_1
         // GET http://www.ifconfig.io/method HTTP/1.0\n\n
-        
         strcpy(buffer, "GET http://");
         strcat(buffer, HTTP_SERVER_NAME);
         strcat(buffer, HTTP_SERVER_FILE_PATH);
-        strcat(buffer, " HTTP/1.0\n\n");
+        strcat(buffer, " HTTP/1.0\n\n");       
+#else
+       // GET /method HTTP/1.1\r\nHost: ifconfig.io\r\nConnection: close\r\n\r\n"
+        strcpy(buffer, "GET ");
+        strcat(buffer, HTTP_SERVER_FILE_PATH);   
+        strcat(buffer, " HTTP/1.1\r\nHost: ");
+        strcat(buffer, HTTP_SERVER_NAME);
+        strcat(buffer, "\r\nConnection: close\r\n\r\n");
+#endif
         
         // Send GET command
         sock.send(buffer, strlen(buffer));
