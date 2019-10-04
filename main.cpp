@@ -30,6 +30,10 @@ DigitalIn esp_gpio0(PD_6);          // Go boot mode by default
                                     // before power-on
 DigitalOut esp_pwr_off(PD_7, 1);    // Disable power to on-board ESP8266
 ESP8266Interface esp(PD_1, PD_0);
+#       elif TARGET_NUMAKER_IOT_M263A
+ESP8266Interface esp(PC_7, PC_6, false, PE_13, PC_8, PE_12);
+//ESP8266Interface esp(PC_7, PC_6, false, PE_13, PC_8, NC);
+//ESP8266Interface esp(PC_7, PC_6);
 #       endif
 #   elif ESP8266_AT_SEL == ESP8266_AT_EXTERN
 ESP8266Interface esp(D1, D0);
