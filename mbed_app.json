@@ -8,12 +8,30 @@
             "nsapi.default-wifi-ssid"               : "\"SSID\"",
             "nsapi.default-wifi-password"           : "\"Password\""
         },
+        "NUMAKER_PFM_NANO130": {
+            "target.network-default-interface-type" : "WIFI",
+            "esp8266.tx"                            : "D1",
+            "esp8266.rx"                            : "D0",
+            "esp8266.rts"                           : "PB_6",
+            "esp8266.cts"                           : "PB_7",
+            "esp8266.rst"                           : "D2",
+            "esp8266.provide-default"               : true
+        },
         "NUMAKER_PFM_NUC472": {
             "target.network-default-interface-type" : "WIFI",
             "esp8266.tx"                            : "PD_15",
             "esp8266.rx"                            : "PF_0",
             "esp8266.rts"                           : "PD_14",
             "esp8266.cts"                           : "PD_13",
+            "esp8266.rst"                           : "D2",
+            "esp8266.provide-default"               : true
+        },
+        "NUMAKER_PFM_M453": {
+            "target.network-default-interface-type" : "WIFI",
+            "esp8266.tx"                            : "A3",
+            "esp8266.rx"                            : "A2",
+            "esp8266.rts"                           : "A5",
+            "esp8266.cts"                           : "A4",
             "esp8266.rst"                           : "D2",
             "esp8266.provide-default"               : true
         },
