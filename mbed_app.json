@@ -36,7 +36,7 @@
                 "ESP8266_AT_SEL=ESP8266_AT_ONBOARD"
             ]
         },
-        "NUMAKER_PFM_M2351": {
+        "NU_PFM_M2351_NPSA_NS": {
             "target.macros_add": [
                 "ESP8266_AT_SEL=ESP8266_AT_ONBOARD"
             ]

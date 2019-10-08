@@ -24,7 +24,7 @@
 #       if TARGET_NUMAKER_IOT_M487
 DigitalOut esp_rst(PH_3, 0);        // Simulate reset button pressed
 ESP8266Interface esp(PH_8, PH_9);
-#       elif TARGET_NUMAKER_PFM_M2351
+#       elif TARGET_NU_PFM_M2351_NPSA_NS
 DigitalIn esp_gpio0(PD_6);          // Go boot mode by default
                                     // User can change to F/W update mode by short'ing ESP8266 GPIO0/GND
                                     // before power-on
@@ -90,7 +90,7 @@ int main() {
     wait_ms(5);
     esp_rst = 1;                    // Simulate reset button released
     wait_ms(5);
-#       elif TARGET_NUMAKER_PFM_M2351
+#       elif TARGET_NU_PFM_M2351_NPSA_NS
     wait_ms(50);
     esp_pwr_off = 0;                // Turn on on-board ESP8266
     wait_ms(50);
