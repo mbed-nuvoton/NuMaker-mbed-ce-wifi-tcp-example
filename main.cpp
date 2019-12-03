@@ -4,6 +4,7 @@
 #include "TCPSocket.h"
 
 #define MBED_HEAP_STATS_ENABLED 1
+#define USE_HTTP_1_1
 //#define LOCAL_LAN
 
 namespace {
