@@ -66,12 +66,19 @@ int main() {
         printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", rc);
         return 0;
     }    
-        
-    printf("TCP client IP Address is %s\r\n", network_interface->get_ip_address());
+    
+    SocketAddress a;
+    network_interface->get_ip_address(&a);
+    printf("TCP client IP Address is %s\r\n", a.get_ip_address());
+    
+    //TCPSocket sock(network_interface);
+    TCPSocket sock;
+    sock.open(network_interface);
 
-    TCPSocket sock(network_interface);
     printf(" HTTP Connection ... \r\n");
-    if (sock.connect(HTTP_SERVER_NAME, HTTP_SERVER_PORT) == 0) {
+    network_interface->gethostbyname(HTTP_SERVER_NAME, &a);
+    a.set_port(HTTP_SERVER_PORT);
+    if (sock.connect(a) == 0) {    
         printf("HTTP: Connected to %s:%d\r\n", HTTP_SERVER_NAME, HTTP_SERVER_PORT);
 
         // We are constructing GET command like this:
