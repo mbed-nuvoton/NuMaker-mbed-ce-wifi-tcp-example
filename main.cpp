@@ -44,6 +44,10 @@ int main() {
     mbed_stats_heap_t heap_stats;
 #endif
 
+#ifdef MBED_MAJOR_VERSION
+    printf("Mbed OS version %d.%d.%d\n\n", MBED_MAJOR_VERSION, MBED_MINOR_VERSION, MBED_PATCH_VERSION);
+#endif
+
     printf("Start WiFi test \r\n");
      
     bool result = true;
