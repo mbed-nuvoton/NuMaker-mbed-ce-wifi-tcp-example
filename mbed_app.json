@@ -53,6 +53,15 @@
             "esp8266.rst"                           : "PH_3",
             "esp8266.provide-default"               : true
         },
+        "NUMAKER_IOT_M467": {
+            "target.network-default-interface-type" : "WIFI",
+            "esp8266.tx"                            : "PC_1",
+            "esp8266.rx"                            : "PC_0",
+            "esp8266.rts"                           : "PC_3",
+            "esp8266.cts"                           : "PC_2",
+            "esp8266.rst"                           : "PC_4",
+            "esp8266.provide-default"               : true
+        },
         "NU_PFM_M2351_NPSA_NS": {
             "target.network-default-interface-type" : "WIFI",
             "esp8266.tx"                            : "PD_1",
