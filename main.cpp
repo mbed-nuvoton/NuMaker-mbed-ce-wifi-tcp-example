@@ -3,7 +3,6 @@
 #include "mbed_stats.h"
 #include "TCPSocket.h"
 
-#define MBED_HEAP_STATS_ENABLED 1
 #define USE_HTTP_1_1
 //#define LOCAL_LAN
 
@@ -55,11 +54,12 @@ int main() {
 
     printf("Start Connection ... \r\n");
 
-    NetworkInterface *network_interface = NetworkInterface::get_default_instance();
+    NetworkInterface *network_interface = WiFiInterface::get_default_instance();
     if (NULL == network_interface) {
         printf("NULL network interface! Exiting application....\r\n");
-        return 0;
+        return EXIT_FAILURE;
     }
+    network_interface->set_default_parameters();
 
     printf("\n\rUsing WiFi \r\n");
     printf("\n\rConnecting to WiFi..\r\n");
@@ -68,7 +68,7 @@ int main() {
         printf("\n\rConnected to Network successfully\r\n");
     } else {
         printf("\n\rConnection to Network Failed %d! Exiting application....\r\n", rc);
-        return 0;
+        return EXIT_FAILURE;
     }    
     
     SocketAddress a;
